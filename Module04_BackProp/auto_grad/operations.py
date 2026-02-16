@@ -1,18 +1,19 @@
+import math
 class Operation(object):
     """ All `Operations` represent two-variable mathematical functions, e.g. +,-,*,/,** 
         __call__ accepts two `Number` objects, and returns a Python-numeric result (int, float)
     """
     def partial_a(self):
         """ Computes the partial derivative of this operation with respect to a: d(op)/da"""
-        raise NotImplementedError
+        return self.partial_a()
 
     def partial_b(self):
         """ Computes the partial derivative of this operation with respect to b: d(op)/db"""
-        raise NotImplementedError
+        return self.partial_b()
 
     def __call__(self, a, b):
         """ Computes the forward pass of this operation: op(a, b) -> output"""
-        raise NotImplementedError
+        return self(a, b)
 
     def backprop(self, grad):
         """ Calls .backprop for self.a and self.b, passing to it dF/da and
@@ -106,17 +107,19 @@ class Subtract(Operation):
             -------
             Union[int, float] """
         # STUDENT CODE HERE
-        raise NotImplementedError
+        self.a = a
+        self.b = b
+        return a.data - b.data
     
     def partial_a(self):
         """ Returns d(a - b)/da as int or float"""
         # STUDENT CODE HERE
-        raise NotImplementedError
+        return 1
     
     def partial_b(self):
         """ Returns d(a - b)/db as int or float"""
         # STUDENT CODE HERE
-        raise NotImplementedError
+        return -1
 
 
 class Divide(Operation):
@@ -134,17 +137,19 @@ class Divide(Operation):
             -------
             Union[int, float] """
         # STUDENT CODE HERE
-        raise NotImplementedError
+        self.a = a
+        self.b = b
+        return a.data / b.data
     
     def partial_a(self):
         """ Returns d(a / b)/da as int or float"""
         # STUDENT CODE HERE
-        raise NotImplementedError
+        return 1 / self.b.data
     
     def partial_b(self):
         """ Returns d(a / b)/db as int or float"""
         # STUDENT CODE HERE
-        raise NotImplementedError
+        return -self.a.data / (self.b.data ** 2)
 
 
 class Power(Operation):
@@ -162,16 +167,18 @@ class Power(Operation):
             -------
             Union[int, float] """
         # STUDENT CODE HERE
-        raise NotImplementedError
+        self.a = a
+        self.b = b
+        return a.data ** b.data
     
     def partial_a(self):
         """ Returns d(a ** b)/da as int or float"""
         # STUDENT CODE HERE
-        raise NotImplementedError
+        return self.b.data * (self.a.data ** (self.b.data - 1))
     
     def partial_b(self):
         """ Returns d(a ** b)/db as int or float
             Reference: http://tutorial.math.lamar.edu/Classes/CalcI/DiffExpLogFcns.aspx
         """
         # STUDENT CODE HERE
-        raise NotImplementedError
+        return (self.a.data ** self.b.data) * math.log(self.a.data)
